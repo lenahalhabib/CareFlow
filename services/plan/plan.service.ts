@@ -81,6 +81,14 @@ export const planService = {
             input.extractedText ??
             null,
 
+          treatment_timeline:
+            input.treatmentTimeline ??
+            null,
+
+          estimated_overall_journey:
+            input.estimatedOverallJourney ??
+            null,
+
           total_amount:
             toNumber(
               input.totalAmount
@@ -294,6 +302,8 @@ export const planService = {
         status,
         original_file_name,
         extracted_text,
+        treatment_timeline,
+        estimated_overall_journey,
         best_hospital_id,
         best_hospital_name,
         best_option_reason,
@@ -363,6 +373,8 @@ export const planService = {
         status,
         original_file_name,
         extracted_text,
+        treatment_timeline,
+        estimated_overall_journey,
         best_hospital_id,
         best_hospital_name,
         best_option_reason,

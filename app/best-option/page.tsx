@@ -38,6 +38,8 @@ export default function BestOptionPage() {
   const {
     extractedText,
     items,
+    treatmentTimeline,
+    estimatedOverallJourney,
     totalAmount,
     resetTreatment,
   } = useTreatment();
@@ -216,6 +218,8 @@ export default function BestOptionPage() {
           extractedText,
           totalAmount,
           items,
+          treatmentTimeline,
+          estimatedOverallJourney,
           comparisonResults,
         });
 

@@ -13,6 +13,27 @@ export type SavePlanItem = {
   total_price: number;
 };
 
+export type TreatmentTimelineStep = {
+  step: number;
+  serviceName: string;
+  toothNumber: string;
+  dependsOn: number[];
+  waitAfter: {
+    min: number | null;
+    max: number | null;
+    unit: "days" | "weeks" | "months" | null;
+  };
+  reason: string;
+  requiresDoctorConfirmation: boolean;
+};
+
+export type EstimatedOverallJourney = {
+  minDays: number;
+  maxDays: number;
+  displayText: string;
+  hasUnknownIntervals: boolean;
+};
+
 export type ServiceBreakdownItem = {
   service_name: string;
   matched_service_name?: string;
@@ -70,6 +91,9 @@ export type TreatmentPlan = {
   original_file_name: string | null;
   extracted_text: string | null;
 
+  treatment_timeline: TreatmentTimelineStep[] | null;
+  estimated_overall_journey: EstimatedOverallJourney | null;
+
   best_hospital_id: string | null;
   best_hospital_name: string | null;
   best_option_reason: string | null;
@@ -91,6 +115,9 @@ export type SaveTreatmentPlanInput = {
 
   originalFileName?: string | null;
   extractedText?: string | null;
+
+  treatmentTimeline?: TreatmentTimelineStep[];
+  estimatedOverallJourney?: EstimatedOverallJourney | null;
 
   totalAmount: number;
 

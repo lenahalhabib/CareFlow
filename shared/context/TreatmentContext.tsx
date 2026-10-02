@@ -10,12 +10,41 @@ export type ExtractedPlanItem = {
   totalPrice: number;
 };
 
+export type TreatmentTimelineStep = {
+  step: number;
+  serviceName: string;
+  toothNumber: string;
+  dependsOn: number[];
+  waitAfter: {
+    min: number | null;
+    max: number | null;
+    unit: "days" | "weeks" | "months" | null;
+  };
+  reason: string;
+  requiresDoctorConfirmation: boolean;
+};
+
+export type EstimatedOverallJourney = {
+  minDays: number;
+  maxDays: number;
+  displayText: string;
+  hasUnknownIntervals: boolean;
+};
+
 type TreatmentContextType = {
   extractedText: string;
   setExtractedText: (value: string) => void;
 
   items: ExtractedPlanItem[];
   setItems: (value: ExtractedPlanItem[]) => void;
+
+  treatmentTimeline: TreatmentTimelineStep[];
+  setTreatmentTimeline: (value: TreatmentTimelineStep[]) => void;
+
+  estimatedOverallJourney: EstimatedOverallJourney | null;
+  setEstimatedOverallJourney: (
+    value: EstimatedOverallJourney | null
+  ) => void;
 
   totalAmount: number;
   setTotalAmount: (value: number) => void;
@@ -30,11 +59,20 @@ const TreatmentContext = createContext<TreatmentContextType | undefined>(
 export function TreatmentProvider({ children }: { children: ReactNode }) {
   const [extractedText, setExtractedText] = useState("");
   const [items, setItems] = useState<ExtractedPlanItem[]>([]);
+  const [treatmentTimeline, setTreatmentTimeline] = useState<
+    TreatmentTimelineStep[]
+  >([]);
+
+  const [estimatedOverallJourney, setEstimatedOverallJourney] =
+    useState<EstimatedOverallJourney | null>(null);
+
   const [totalAmount, setTotalAmount] = useState(0);
 
   function resetTreatment() {
     setExtractedText("");
     setItems([]);
+    setTreatmentTimeline([]);
+    setEstimatedOverallJourney(null);
     setTotalAmount(0);
   }
 
@@ -45,6 +83,10 @@ export function TreatmentProvider({ children }: { children: ReactNode }) {
         setExtractedText,
         items,
         setItems,
+        treatmentTimeline,
+        setTreatmentTimeline,
+        estimatedOverallJourney,
+        setEstimatedOverallJourney,
         totalAmount,
         setTotalAmount,
         resetTreatment,

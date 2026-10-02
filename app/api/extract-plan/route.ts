@@ -22,8 +22,9 @@ export async function POST(request: NextRequest) {
       ? await extractTreatmentPlanFromFile(file)
       : await extractTreatmentPlanFromText(text || "");
 
-      console.log(JSON.stringify(result, null, 2));
-      
+    console.log("NORMALIZED TREATMENT PLAN:");
+    console.log(JSON.stringify(result, null, 2));
+
     return NextResponse.json({
       success: true,
       text: text || "",
@@ -31,6 +32,8 @@ export async function POST(request: NextRequest) {
       clinicName: result.clinicName,
       insurance: result.insurance,
       items: result.items,
+      treatmentTimeline: result.treatmentTimeline,
+      estimatedOverallJourney: result.estimatedOverallJourney,
       totalAmount: result.totalAmount,
     });
   } catch (error) {

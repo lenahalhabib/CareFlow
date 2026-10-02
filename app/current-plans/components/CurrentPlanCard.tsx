@@ -276,6 +276,26 @@ export default function CurrentPlanCard({
             SAR
           </p>
         </div>
+
+        {plan.estimated_overall_journey?.displayText && (
+          <>
+            <div className="my-6 h-px bg-[#C8D2D0]" />
+
+            <div className="flex items-center justify-between gap-4 text-[#365863]">
+              <p className="text-xl font-bold">
+                Estimated Treatment Duration
+              </p>
+
+              <p className="text-xl font-bold">
+                {
+                  plan
+                    .estimated_overall_journey
+                    .displayText
+                }
+              </p>
+            </div>
+          </>
+        )}
       </section>
 
       {bestHospital ? (

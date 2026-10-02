@@ -1,5 +1,7 @@
 import type {
   ExtractedPlanItem,
+  EstimatedOverallJourney,
+  TreatmentTimelineStep,
 } from "@/shared/context/TreatmentContext";
 
 import type {
@@ -23,7 +25,15 @@ type BuildSavePlanInputParams = {
   extractedText: string;
   totalAmount: number;
   items: ExtractedPlanItem[];
-  comparisonResults: ComparisonResult[];
+
+  treatmentTimeline:
+    TreatmentTimelineStep[];
+
+  estimatedOverallJourney:
+    EstimatedOverallJourney | null;
+
+  comparisonResults:
+    ComparisonResult[];
 };
 
 function formatAmount(
@@ -202,6 +212,8 @@ export function buildSaveTreatmentPlanInput({
   extractedText,
   totalAmount,
   items,
+  treatmentTimeline,
+  estimatedOverallJourney,
   comparisonResults,
 }: BuildSavePlanInputParams): SaveTreatmentPlanInput {
   const bestOption =
@@ -227,6 +239,10 @@ export function buildSaveTreatmentPlanInput({
     originalFileName: null,
 
     extractedText,
+
+    treatmentTimeline,
+
+    estimatedOverallJourney,
 
     totalAmount:
       Number(totalAmount || 0),
