@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Calendar, Clock, MapPin, CheckCircle, Clock3, AlertCircle, FileText, ChevronRight, User, Stethoscope, Star, Bell } from 'lucide-react';
+import { Suspense } from 'react';
 import BottomNavigation from "@/shared/components/navigation/BottomNavigation";
 
 // Mock Patient Data
@@ -27,7 +28,7 @@ const MOCK_PATIENT = {
   noShowReason: null,
 };
 
-export default function PatientDashboard() {
+function PatientDashboardContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [showNoShowModal, setShowNoShowModal] = useState(false);
@@ -280,5 +281,13 @@ export default function PatientDashboard() {
 
       <BottomNavigation />
     </main>
+  );
+}
+
+export default function PatientDashboard() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#D4E0DF] flex items-center justify-center"><div className="w-16 h-16 border-4 border-[#D4E0DF] border-t-[#476973] rounded-full animate-spin"></div></div>}>
+      <PatientDashboardContent />
+    </Suspense>
   );
 }

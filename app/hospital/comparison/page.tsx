@@ -14,6 +14,7 @@ import {
   Filter,
   X,
 } from "lucide-react";
+import { Suspense } from 'react';
 
 import BottomNavigation from "@/shared/components/navigation/BottomNavigation";
 import { useTreatment } from "@/shared/context/TreatmentContext";
@@ -32,7 +33,7 @@ import HospitalCard from "./components/HospitalCard";
 const SELECTED_INSURANCE_STORAGE_KEY =
   "selectedInsuranceCompanyId";
 
-export default function HospitalComparisonPage() {
+function HospitalComparisonContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const isAlternative = searchParams?.get('isAlternative') === 'true';
@@ -360,5 +361,20 @@ export default function HospitalComparisonPage() {
 
       <BottomNavigation />
     </main>
+  );
+}
+
+export default function HospitalComparisonPage() {
+  return (
+    <Suspense fallback={
+      <main className="flex min-h-screen items-center justify-center bg-[#D4E0DF] px-6">
+        <div className="rounded-[30px] bg-[#F8FBFA] p-8 text-center shadow-sm">
+          <div className="mx-auto mb-4 h-9 w-9 animate-spin rounded-full border-4 border-[#D4E0DF] border-t-[#476973]" />
+          <p className="font-semibold text-[#476973]">Loading...</p>
+        </div>
+      </main>
+    }>
+      <HospitalComparisonContent />
+    </Suspense>
   );
 }
