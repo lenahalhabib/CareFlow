@@ -18,8 +18,8 @@ export default function BottomNavigation() {
           <Plus size={28} className={iconClass("/create-plan")} />
         </Link>
 
-        <Link href="/current-plans">
-          <FileText size={28} className={iconClass("/current-plans")} />
+        <Link href="/patient/dashboard">
+          <FileText size={28} className={iconClass("/patient/dashboard")} />
         </Link>
 
         <Link href="/profile">

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-
+import { useRouter } from "next/navigation";
 import {
   BadgeCheck,
   Check,
@@ -10,11 +10,13 @@ import {
   MapPin,
   Star,
   Trophy,
+  User,
+  Stethoscope,
+  Calendar as CalendarIcon,
+  Clock,
 } from "lucide-react";
 
-import type {
-  ComparisonResult,
-} from "@/shared/utils/hospitalComparison";
+import type { ComparisonResult } from "@/shared/utils/hospitalComparison";
 
 import TreatmentPrices from "./TreatmentPrices";
 import InsuranceSelector from "./InsuranceSelector";
@@ -23,6 +25,7 @@ import MissingServices from "./MissingServices";
 type HospitalCardProps = {
   result: ComparisonResult;
   isBestMatch: boolean;
+  isAlternative?: boolean;
 };
 
 type FinancingCalculation = {
@@ -37,33 +40,17 @@ const ANNUAL_RATE = 6;
 const ADMINISTRATIVE_FEE_RATE = 0.5;
 
 function formatAmount(amount: number): string {
-  return Math.round(
-    Number(amount || 0)
-  ).toLocaleString();
+  return Math.round(Number(amount || 0)).toLocaleString();
 }
 
-function calculateFinancing(
-  treatmentCost: number
-): FinancingCalculation {
-  const safeTreatmentCost = Math.max(
-    Number(treatmentCost || 0),
-    0
-  );
-
-  const administrativeFee =
-    safeTreatmentCost *
-    (ADMINISTRATIVE_FEE_RATE / 100);
-
-  const financedAmount =
-    safeTreatmentCost + administrativeFee;
-
-  const monthlyRate =
-    ANNUAL_RATE / 12 / 100;
+function calculateFinancing(treatmentCost: number): FinancingCalculation {
+  const safeTreatmentCost = Math.max(Number(treatmentCost || 0), 0);
+  const administrativeFee = safeTreatmentCost * (ADMINISTRATIVE_FEE_RATE / 100);
+  const financedAmount = safeTreatmentCost + administrativeFee;
+  const monthlyRate = ANNUAL_RATE / 12 / 100;
 
   if (monthlyRate === 0) {
-    const monthlyPayment =
-      financedAmount / FINANCING_MONTHS;
-
+    const monthlyPayment = financedAmount / FINANCING_MONTHS;
     return {
       monthlyPayment,
       administrativeFee,
@@ -72,18 +59,9 @@ function calculateFinancing(
     };
   }
 
-  const rateFactor = Math.pow(
-    1 + monthlyRate,
-    FINANCING_MONTHS
-  );
-
-  const monthlyPayment =
-    financedAmount *
-    ((monthlyRate * rateFactor) /
-      (rateFactor - 1));
-
-  const totalPayable =
-    monthlyPayment * FINANCING_MONTHS;
+  const rateFactor = Math.pow(1 + monthlyRate, FINANCING_MONTHS);
+  const monthlyPayment = financedAmount * ((monthlyRate * rateFactor) / (rateFactor - 1));
+  const totalPayable = monthlyPayment * FINANCING_MONTHS;
 
   return {
     monthlyPayment,
@@ -93,19 +71,57 @@ function calculateFinancing(
   };
 }
 
-export default function HospitalCard({
-  result,
-  isBestMatch,
-}: HospitalCardProps) {
-  const [isFinancingOpen, setIsFinancingOpen] =
-    useState(false);
+export default function HospitalCard({ result, isBestMatch, isAlternative }: HospitalCardProps) {
+  const router = useRouter();
+  const [isFinancingOpen, setIsFinancingOpen] = useState(false);
+  const [showDoctorModal, setShowDoctorModal] = useState(false);
+  const [showBookingModal, setShowBookingModal] = useState(false);
+  const [bookingStatus, setBookingStatus] = useState<'idle' | 'waiting' | 'confirmed'>('idle');
+  const [selectedDate, setSelectedDate] = useState('');
+  const [selectedTime, setSelectedTime] = useState('');
 
-  const financing = calculateFinancing(
-    result.total
-  );
+  // 650 SAR represents the completed treatments (CBCT + Cleaning)
+  const displayTotal = isAlternative ? Math.max(0, result.total - 650) : result.total;
+  const financing = calculateFinancing(displayTotal);
+
+  // Generate mock doctor data based on hospital name to ensure variety
+  const getMockDoctor = (hospitalName: string) => {
+    if (hospitalName.includes("B")) {
+      return {
+        name: "د. أحمد خالد",
+        title: "استشاري زراعة أسنان",
+        experience: "15 سنة",
+        degree: "البورد السعودي في جراحة الوجه والفكين",
+        rating: 4.9,
+      };
+    } else if (hospitalName.includes("A")) {
+      return {
+        name: "د. سارة فهد",
+        title: "أخصائية تقويم وزراعة",
+        experience: "9 سنوات",
+        degree: "ماجستير طب الأسنان - جامعة الملك سعود",
+        rating: 4.7,
+      };
+    } else {
+      return {
+        name: "د. عمر عبدالله",
+        title: "استشاري جراحة اللثة",
+        experience: "12 سنة",
+        degree: "البورد الأمريكي لطب الأسنان",
+        rating: 4.8,
+      };
+    }
+  };
+
+  const mockDoctor = getMockDoctor(result.hospital.name);
+
+  const handleBook = () => {
+    if (!selectedDate || !selectedTime) return alert("الرجاء اختيار تاريخ ووقت");
+    router.push('/patient/dashboard?status=pending');
+  };
 
   return (
-    <article className="rounded-[30px] bg-[#F8FBFA] p-5 shadow-sm">
+    <article className="rounded-[30px] bg-[#F8FBFA] p-5 shadow-sm relative">
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0">
           {isBestMatch && (
@@ -118,26 +134,27 @@ export default function HospitalCard({
           <h2 className="font-serif text-2xl text-[#476973]">
             {result.hospital.name}
           </h2>
+          
+          <button onClick={() => setShowDoctorModal(true)} className="mt-1 flex items-center gap-2 text-[#476973] font-bold text-sm hover:underline">
+            <Stethoscope size={16} /> {mockDoctor.name}
+          </button>
 
           <p className="mt-2 flex items-center gap-2 text-sm text-[#476973]/70">
-            <MapPin
-              size={16}
-              className="shrink-0"
-            />
-
-            {result.hospital.location}
+            <MapPin size={16} className="shrink-0" />
+            {result.hospital.location} (يبعد 2.5 كم)
           </p>
 
           {result.hospital.accreditation && (
-            <p className="mt-2 flex items-center gap-2 text-sm text-[#476973]/70">
-              <BadgeCheck
-                size={16}
-                className="shrink-0"
-              />
-
+            <p className="mt-1 flex items-center gap-2 text-sm text-[#476973]/70">
+              <BadgeCheck size={16} className="shrink-0" />
               {result.hospital.accreditation}
             </p>
           )}
+          
+          <div className="mt-2 flex gap-2">
+            <span className="bg-[#D4E0DF] text-[#476973] px-2 py-1 rounded-md text-xs font-bold">يقبل التأمين</span>
+            <span className="bg-[#D4E0DF] text-[#476973] px-2 py-1 rounded-md text-xs font-bold">يوجد تقسيط</span>
+          </div>
         </div>
 
         <div className="shrink-0 text-right">
@@ -146,7 +163,7 @@ export default function HospitalCard({
           </p>
 
           <p className="mt-1 text-2xl font-bold text-[#476973]">
-            {formatAmount(result.total)}
+            {formatAmount(displayTotal)}
           </p>
 
           <p className="text-xs text-[#476973]/60">
@@ -176,8 +193,8 @@ export default function HospitalCard({
 
       <div className="mt-4 space-y-3">
         <TreatmentPrices
-          items={result.matchedItems}
-          total={result.total}
+          items={isAlternative ? result.matchedItems.slice(2) : result.matchedItems}
+          total={displayTotal}
         />
 
         <InsuranceSelector
@@ -253,7 +270,7 @@ export default function HospitalCard({
                 </p>
 
                 <p className="mt-1 text-lg font-bold text-[#476973]">
-                  {formatAmount(result.total)} SAR
+                  {formatAmount(displayTotal)} SAR
                   upfront
                 </p>
               </div>
@@ -348,6 +365,85 @@ export default function HospitalCard({
           />
         )}
       </div>
+
+      <div className="mt-5">
+         <button onClick={() => setShowBookingModal(true)} className="w-full bg-[#476973] hover:bg-[#3d5d66] text-white py-4 rounded-2xl font-bold transition shadow-sm">
+           حجز موعد
+         </button>
+      </div>
+
+      {/* Doctor Modal */}
+      {showDoctorModal && (
+        <div className="fixed inset-0 bg-[#476973]/50 flex items-center justify-center p-6 z-50 backdrop-blur-sm" dir="rtl">
+          <div className="bg-[#F8FBFA] rounded-[36px] p-6 w-full max-w-md shadow-xl text-right">
+            <div className="flex justify-between items-center mb-6 border-b border-[#476973]/10 pb-4">
+              <h3 className="text-2xl font-bold text-[#476973] flex items-center gap-2">
+                 <Stethoscope size={24}/> بيانات الطبيب
+              </h3>
+              <button onClick={() => setShowDoctorModal(false)} className="text-[#476973]/60 hover:text-[#476973] font-bold">إغلاق</button>
+            </div>
+            
+            <div className="space-y-4 text-[#476973]">
+               <div>
+                 <p className="text-sm opacity-70">الاسم</p>
+                 <p className="font-bold text-lg">{mockDoctor.name}</p>
+               </div>
+               <div>
+                 <p className="text-sm opacity-70">المسمى المهني</p>
+                 <p className="font-bold">{mockDoctor.title}</p>
+               </div>
+               <div>
+                 <p className="text-sm opacity-70">الشهادات</p>
+                 <p className="font-bold">{mockDoctor.degree}</p>
+               </div>
+               <div className="flex justify-between border-t border-[#476973]/10 pt-4 mt-2">
+                 <div>
+                   <p className="text-sm opacity-70">سنوات الخبرة</p>
+                   <p className="font-bold">{mockDoctor.experience}</p>
+                 </div>
+                 <div>
+                   <p className="text-sm opacity-70">التقييم</p>
+                   <p className="font-bold flex items-center gap-1"><Star size={16} className="fill-[#476973]" /> {mockDoctor.rating}/5</p>
+                 </div>
+               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Booking Modal */}
+      {showBookingModal && (
+        <div className="fixed inset-0 bg-[#476973]/50 flex items-center justify-center p-6 z-50 backdrop-blur-sm" dir="rtl">
+          <div className="bg-[#F8FBFA] rounded-[36px] p-6 w-full max-w-md shadow-xl text-center">
+            
+            <h3 className="text-2xl font-bold text-[#476973] mb-2">حجز الجلسة الأولى</h3>
+            <p className="text-sm text-[#476973]/70 mb-6">الرجاء اختيار الموعد المناسب لزيارتك الأولى للطبيب {mockDoctor.name}</p>
+            
+            <div className="space-y-4 mb-6 text-right">
+               <div>
+                 <label className="block text-sm font-bold text-[#476973] mb-2">تاريخ الموعد</label>
+                 <div className="flex items-center gap-3 bg-white px-4 py-3 rounded-2xl border border-[#476973]/20">
+                   <CalendarIcon size={20} className="text-[#476973]" />
+                   <input type="date" value={selectedDate} onChange={e => setSelectedDate(e.target.value)} className="w-full bg-transparent outline-none text-[#476973]" />
+                 </div>
+               </div>
+               <div>
+                 <label className="block text-sm font-bold text-[#476973] mb-2">وقت الموعد</label>
+                 <div className="flex items-center gap-3 bg-white px-4 py-3 rounded-2xl border border-[#476973]/20">
+                   <Clock size={20} className="text-[#476973]" />
+                   <input type="time" value={selectedTime} onChange={e => setSelectedTime(e.target.value)} className="w-full bg-transparent outline-none text-[#476973]" />
+                 </div>
+               </div>
+            </div>
+
+            <div className="flex gap-3">
+              <button onClick={() => setShowBookingModal(false)} className="flex-1 bg-white border border-[#476973]/20 text-[#476973] py-4 rounded-2xl font-bold hover:bg-[#D4E0DF]/30 transition">إلغاء</button>
+              <button onClick={handleBook} className="flex-1 bg-[#476973] text-white py-4 rounded-2xl font-bold hover:bg-[#3d5d66] transition shadow-sm">تأكيد الموعد</button>
+            </div>
+
+          </div>
+        </div>
+      )}
     </article>
   );
 }

@@ -6,11 +6,13 @@ import {
   useState,
 } from "react";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import {
   ArrowLeft,
   ArrowRight,
+  Filter,
+  X,
 } from "lucide-react";
 
 import BottomNavigation from "@/shared/components/navigation/BottomNavigation";
@@ -32,11 +34,32 @@ const SELECTED_INSURANCE_STORAGE_KEY =
 
 export default function HospitalComparisonPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const isAlternative = searchParams?.get('isAlternative') === 'true';
 
   const {
-    items,
+    items: contextItems,
     totalAmount,
   } = useTreatment();
+
+  // For the hackathon demo, if the user navigated here without state or isAlternative is true, mock the data
+  const MOCK_ITEMS = [
+    { serviceName: 'أشعة CBCT', quantity: 1, totalPrice: 350 },
+    { serviceName: 'تنظيف جير', quantity: 1, totalPrice: 300 },
+    { serviceName: 'ترقيع عظم', quantity: 1, totalPrice: 2500 },
+    { serviceName: 'رفع الجيب الأنفي', quantity: 1, totalPrice: 3000 },
+    { serviceName: 'زرعة زيجماتيك', quantity: 1, totalPrice: 15000 }
+  ];
+  
+  const items = (contextItems && contextItems.length > 0) ? contextItems : MOCK_ITEMS;
+
+  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
+  const [activeFilters, setActiveFilters] = useState({
+    price: false,
+    distance: false,
+    insurance: false,
+    installments: false,
+  });
 
   const [
     comparisonData,
@@ -200,16 +223,20 @@ export default function HospitalComparisonPage() {
   return (
     <main className="flex min-h-screen flex-col bg-[#D4E0DF]">
       <section className="flex-1 px-6 pb-10 pt-12">
-        <header className="mb-8 text-center">
-          <h1 className="font-serif text-4xl text-[#476973]">
-            Hospital Comparison
-          </h1>
-
-          <p className="mt-3 text-[#476973]/75">
-            Compare hospitals based on
-            treatment availability, price
-            and rating.
-          </p>
+        <header className="mb-6 relative flex items-center justify-center">
+          <button onClick={() => router.push('/review-plan')} className="absolute left-0 top-1/2 -translate-y-1/2 text-[#476973] p-2 bg-[#F8FBFA] rounded-full shadow-sm hover:bg-[#D4E0DF] transition">
+             <ArrowLeft size={24} />
+          </button>
+          <div className="text-center">
+            <h1 className="font-serif text-4xl text-[#476973]">
+              {isAlternative ? "Alternative Options" : "Hospital Comparison"}
+            </h1>
+            <p className="mt-2 text-[#476973]/75 text-sm">
+              {isAlternative 
+                ? "Explore alternative hospitals for the remaining parts of your treatment plan." 
+                : "Compare hospitals based on treatment availability, price and rating."}
+            </p>
+          </div>
         </header>
 
         {errorMessage && (
@@ -230,29 +257,25 @@ export default function HospitalComparisonPage() {
           </div>
         )}
 
-        <div className="mb-6 rounded-[30px] bg-[#476973] p-5 text-white shadow-sm">
-          <p className="text-sm opacity-80">
-            Your current plan
-          </p>
-
-          <p className="mt-1 text-3xl font-bold">
-            {Number(
-              totalAmount || 0
-            ).toLocaleString()}{" "}
-            SAR
-          </p>
-
-          <p className="mt-2 text-sm text-white/70">
-            {items.length} treatment{" "}
-            {items.length === 1
-              ? "service"
-              : "services"}
-          </p>
+        <div className="mb-6 rounded-[30px] bg-[#476973] p-5 text-white shadow-sm flex items-center justify-between">
+          <div>
+            <p className="text-sm opacity-80">
+              {isAlternative ? "Remaining treatment cost" : "Your current plan"}
+            </p>
+            <p className="mt-1 text-3xl font-bold">
+              {Number(isAlternative ? 20200 : totalAmount || 0).toLocaleString()} SAR
+            </p>
+            <p className="mt-2 text-sm text-white/70">
+              {isAlternative ? 3 : items.length} treatment {(!isAlternative && items.length === 1) ? "service" : "services"}
+            </p>
+          </div>
+          
+          <button onClick={() => setIsFilterModalOpen(true)} className="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center hover:bg-white/20 transition">
+             <Filter size={20} className="text-white" />
+          </button>
         </div>
 
-        {!errorMessage &&
-        comparisonResults.length ===
-          0 ? (
+        {!errorMessage && comparisonResults.length === 0 ? (
           <div className="rounded-[36px] bg-[#F8FBFA] p-6 text-center shadow-sm">
             <h2 className="font-serif text-3xl text-[#476973]">
               No Matches Found
@@ -289,43 +312,51 @@ export default function HospitalComparisonPage() {
                     isBestMatch={
                       index === 0
                     }
+                    isAlternative={isAlternative}
                   />
                 )
               )}
-
-              <button
-                type="button"
-                onClick={() =>
-                  router.push(
-                    "/best-option"
-                  )
-                }
-                className="mt-7 flex w-full items-center justify-center gap-2 rounded-2xl bg-[#476973] py-4 font-semibold text-white"
-              >
-                View Best Option
-                <ArrowRight
-                  size={20}
-                />
-              </button>
-
-              <button
-                type="button"
-                onClick={() =>
-                  router.push(
-                    "/review-plan"
-                  )
-                }
-                className="flex w-full items-center justify-center gap-2 rounded-2xl border-2 border-[#476973] py-4 font-semibold text-[#476973]"
-              >
-                <ArrowLeft
-                  size={20}
-                />
-                Back to Review
-              </button>
             </div>
           )
         )}
       </section>
+
+      {/* Filter Modal */}
+      {isFilterModalOpen && (
+        <div className="fixed inset-0 bg-[#476973]/50 flex items-end sm:items-center justify-center z-50 backdrop-blur-sm" onClick={() => setIsFilterModalOpen(false)}>
+          <div className="bg-[#F8FBFA] rounded-t-[36px] sm:rounded-[36px] p-6 w-full max-w-md shadow-xl text-left" onClick={e => e.stopPropagation()}>
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-2xl font-bold text-[#476973] font-serif">Filters</h3>
+              <button onClick={() => setIsFilterModalOpen(false)} className="text-[#476973] hover:bg-[#D4E0DF] p-2 rounded-full transition">
+                <X size={20} />
+              </button>
+            </div>
+            
+            <div className="space-y-4 mb-8">
+              {[
+                { id: 'price', label: 'Price (Lowest First)' },
+                { id: 'distance', label: 'Distance (Nearest First)' },
+                { id: 'insurance', label: 'Accepts Insurance' },
+                { id: 'installments', label: 'Available Installments' }
+              ].map(filter => (
+                <label key={filter.id} className="flex items-center gap-3 p-4 bg-white rounded-2xl border border-[#476973]/20 cursor-pointer hover:bg-[#D4E0DF]/20 transition">
+                  <input 
+                    type="checkbox" 
+                    checked={(activeFilters as any)[filter.id]}
+                    onChange={() => setActiveFilters(prev => ({...prev, [filter.id]: !(prev as any)[filter.id]}))}
+                    className="w-5 h-5 text-[#476973] rounded border-[#476973]/30 focus:ring-[#476973]" 
+                  />
+                  <span className="font-semibold text-[#476973]">{filter.label}</span>
+                </label>
+              ))}
+            </div>
+
+            <button onClick={() => setIsFilterModalOpen(false)} className="w-full bg-[#476973] text-white py-4 rounded-2xl font-bold hover:bg-[#3d5d66] transition shadow-sm">
+              Apply Filters
+            </button>
+          </div>
+        </div>
+      )}
 
       <BottomNavigation />
     </main>

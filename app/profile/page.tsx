@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { User, Mail, Lock, LogOut, Save } from "lucide-react";
+import { User, Mail, Lock, LogOut, Save, Shield } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import BottomNavigation from "@/shared/components/navigation/BottomNavigation";
 
@@ -12,6 +12,7 @@ export default function ProfilePage() {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [insurance, setInsurance] = useState("");
 
   const [message, setMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -54,6 +55,11 @@ export default function ProfilePage() {
     if (data) {
       setFullName(data.full_name || "");
       setEmail(data.email || userEmail);
+    }
+
+    const savedInsurance = window.localStorage.getItem("profile_insurance");
+    if (savedInsurance) {
+      setInsurance(savedInsurance);
     }
 
     setLoading(false);
@@ -124,6 +130,7 @@ export default function ProfilePage() {
 
       setFullName(cleanFullName);
       setEmail(cleanEmail);
+      window.localStorage.setItem("profile_insurance", insurance.trim());
       setMessage("Profile updated successfully.");
     } catch (err) {
       console.error(err);
@@ -204,6 +211,35 @@ export default function ProfilePage() {
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full bg-transparent text-[#476973] outline-none placeholder:text-[#476973]/45"
               />
+            </div>
+
+            <div className="flex items-center gap-3 rounded-2xl bg-white px-4 py-4 relative">
+              <Shield size={21} className="text-[#476973]" />
+              <input
+                list="insurances"
+                type="text"
+                placeholder="Insurance Company"
+                value={insurance}
+                onChange={(e) => setInsurance(e.target.value)}
+                className="w-full bg-transparent text-[#476973] outline-none placeholder:text-[#476973]/45"
+              />
+              <datalist id="insurances">
+                <option value="بوبا العربية (Bupa Arabia)" />
+                <option value="التعاونية (Tawuniya)" />
+                <option value="تكافل الراجحي (Al Rajhi Takaful)" />
+                <option value="ميدغلف (Medgulf)" />
+                <option value="ملاذ للتأمين (Malath Insurance)" />
+                <option value="الدرع العربي (Arabian Shield)" />
+                <option value="أليانز السعودي الفرنسي (Allianz Saudi Fransi)" />
+                <option value="ولاء للتأمين (Walaa Insurance)" />
+                <option value="عناية السعودية (Saudi Enaya)" />
+                <option value="بروج للتأمين (Buruj Insurance)" />
+                <option value="المتحدة للتأمين (UCA)" />
+                <option value="الصقر للتأمين (Al Sagr Insurance)" />
+                <option value="طوكيو مارين (Tokio Marine)" />
+                <option value="الخليجية العامة (Gulf General)" />
+                <option value="العالمية للتأمين (Al Alamiya)" />
+              </datalist>
             </div>
           </div>
 
