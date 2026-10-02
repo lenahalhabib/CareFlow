@@ -34,7 +34,7 @@ export interface TreatmentDay {
   id: string;
   dayNumber: number;
   date: string;
-  status: 'Completed' | 'Today' | 'Scheduled' | 'No_Show';
+  status: 'Completed' | 'Today' | 'Scheduled' | 'No_Show' | 'In_Progress';
   steps: PlanStep[];
   gapDaysToNext: number; // AI suggested gap to the *next* day
   notes?: string;
