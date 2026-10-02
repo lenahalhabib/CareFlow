@@ -88,36 +88,74 @@ export default function HospitalCard({ result, isBestMatch, isAlternative }: Hos
   const getMockDoctor = (hospitalName: string) => {
     if (hospitalName.includes("B")) {
       return {
-        name: "د. أحمد خالد",
-        title: "استشاري زراعة أسنان",
-        experience: "15 سنة",
-        degree: "البورد السعودي في جراحة الوجه والفكين",
+        name: "Dr. Ahmed Khalid",
+        title: "Implant Consultant",
+        experience: "15 years",
+        degree: "Saudi Board in Maxillofacial Surgery",
         rating: 4.9,
       };
     } else if (hospitalName.includes("A")) {
       return {
-        name: "د. سارة فهد",
-        title: "أخصائية تقويم وزراعة",
-        experience: "9 سنوات",
-        degree: "ماجستير طب الأسنان - جامعة الملك سعود",
+        name: "Dr. Sarah Fahad",
+        title: "Orthodontics Specialist",
+        experience: "9 years",
+        degree: "Master's in Dentistry - KSU",
         rating: 4.7,
+      };
+    } else if (hospitalName.includes("C")) {
+      return {
+        name: "Dr. Omar Abdullah",
+        title: "Periodontics Consultant",
+        experience: "12 years",
+        degree: "American Board of Dentistry",
+        rating: 4.8,
+      };
+    } else if (hospitalName.includes("D")) {
+      return {
+        name: "Dr. Reem Alsaud",
+        title: "Prosthodontist",
+        experience: "10 years",
+        degree: "Fellowship in Restorative Dentistry",
+        rating: 4.6,
       };
     } else {
       return {
-        name: "د. عمر عبدالله",
-        title: "استشاري جراحة اللثة",
-        experience: "12 سنة",
-        degree: "البورد الأمريكي لطب الأسنان",
-        rating: 4.8,
+        name: "Dr. Khalid Ziyad",
+        title: "Dental Surgeon",
+        experience: "8 years",
+        degree: "General Dentistry",
+        rating: 4.5,
       };
     }
   };
 
+  // Generate a mock distance based on hospital ID
+  const getMockDistance = (id: string) => {
+    const num = id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    const distance = (num % 20) + 1.5; // Between 1.5 and 21.5 km
+    return distance.toFixed(1);
+  };
+  
+  const mockDistance = getMockDistance(result.hospital.id);
   const mockDoctor = getMockDoctor(result.hospital.name);
 
   const handleBook = () => {
-    if (!selectedDate || !selectedTime) return alert("الرجاء اختيار تاريخ ووقت");
-    router.push('/patient/dashboard?status=pending');
+    if (!selectedDate || !selectedTime) return alert("Please select a date and time");
+    
+    // Save booked treatments to localStorage so the dashboard can read them dynamically
+    try {
+      const bookedItems = isAlternative ? result.matchedItems.slice(2) : result.matchedItems;
+      localStorage.setItem("bookedTreatments", JSON.stringify(bookedItems));
+    } catch (e) {
+      console.error(e);
+    }
+    
+    const query = new URLSearchParams({
+      status: 'pending',
+      hospital: result.hospital.name,
+      doctor: mockDoctor.name
+    });
+    router.push(`/patient/dashboard?${query.toString()}`);
   };
 
   return (
@@ -141,7 +179,7 @@ export default function HospitalCard({ result, isBestMatch, isAlternative }: Hos
 
           <p className="mt-2 flex items-center gap-1.5 text-xs text-[#476973]/70">
             <MapPin size={14} className="shrink-0" />
-            {result.hospital.location} (يبعد 2.5 كم)
+            {result.hospital.location} ({mockDistance} km away)
           </p>
 
           {result.hospital.accreditation && (
@@ -152,8 +190,12 @@ export default function HospitalCard({ result, isBestMatch, isAlternative }: Hos
           )}
           
           <div className="mt-2 flex gap-1.5">
-            <span className="bg-[#D4E0DF] text-[#476973] px-2 py-0.5 rounded-md text-[11px] font-bold">يقبل التأمين</span>
-            <span className="bg-[#D4E0DF] text-[#476973] px-2 py-0.5 rounded-md text-[11px] font-bold">يوجد تقسيط</span>
+            {result.insuranceOptions.length > 0 && (
+              <span className="bg-[#D4E0DF] text-[#476973] px-2 py-0.5 rounded-md text-[11px] font-bold">Accepts Insurance</span>
+            )}
+            {result.hospital.rating > 4.6 && (
+              <span className="bg-[#D4E0DF] text-[#476973] px-2 py-0.5 rounded-md text-[11px] font-bold">Installments Available</span>
+            )}
           </div>
         </div>
 
@@ -368,41 +410,41 @@ export default function HospitalCard({ result, isBestMatch, isAlternative }: Hos
 
       <div className="mt-5">
          <button onClick={() => setShowBookingModal(true)} className="w-full bg-[#476973] hover:bg-[#3d5d66] text-white py-4 rounded-2xl font-bold transition shadow-sm">
-           حجز موعد
+           Book Appointment
          </button>
       </div>
 
       {/* Doctor Modal */}
       {showDoctorModal && (
-        <div className="fixed inset-0 bg-[#476973]/50 flex items-center justify-center p-6 z-50 backdrop-blur-sm" dir="rtl">
-          <div className="bg-[#F8FBFA] rounded-[36px] p-6 w-full max-w-md shadow-xl text-right">
+        <div className="fixed inset-0 bg-[#476973]/50 flex items-center justify-center p-6 z-50 backdrop-blur-sm" dir="ltr">
+          <div className="bg-[#F8FBFA] rounded-[36px] p-6 w-full max-w-md shadow-xl text-left">
             <div className="flex justify-between items-center mb-6 border-b border-[#476973]/10 pb-4">
               <h3 className="text-2xl font-bold text-[#476973] flex items-center gap-2">
-                 <Stethoscope size={24}/> بيانات الطبيب
+                 <Stethoscope size={24}/> Doctor Profile
               </h3>
-              <button onClick={() => setShowDoctorModal(false)} className="text-[#476973]/60 hover:text-[#476973] font-bold">إغلاق</button>
+              <button onClick={() => setShowDoctorModal(false)} className="text-[#476973]/60 hover:text-[#476973] font-bold">Close</button>
             </div>
             
             <div className="space-y-4 text-[#476973]">
                <div>
-                 <p className="text-sm opacity-70">الاسم</p>
+                 <p className="text-sm opacity-70">Name</p>
                  <p className="font-bold text-lg">{mockDoctor.name}</p>
                </div>
                <div>
-                 <p className="text-sm opacity-70">المسمى المهني</p>
+                 <p className="text-sm opacity-70">Professional Title</p>
                  <p className="font-bold">{mockDoctor.title}</p>
                </div>
                <div>
-                 <p className="text-sm opacity-70">الشهادات</p>
+                 <p className="text-sm opacity-70">Degrees</p>
                  <p className="font-bold">{mockDoctor.degree}</p>
                </div>
                <div className="flex justify-between border-t border-[#476973]/10 pt-4 mt-2">
                  <div>
-                   <p className="text-sm opacity-70">سنوات الخبرة</p>
+                   <p className="text-sm opacity-70">Experience</p>
                    <p className="font-bold">{mockDoctor.experience}</p>
                  </div>
                  <div>
-                   <p className="text-sm opacity-70">التقييم</p>
+                   <p className="text-sm opacity-70">Rating</p>
                    <p className="font-bold flex items-center gap-1"><Star size={16} className="fill-[#476973]" /> {mockDoctor.rating}/5</p>
                  </div>
                </div>
@@ -413,22 +455,22 @@ export default function HospitalCard({ result, isBestMatch, isAlternative }: Hos
 
       {/* Booking Modal */}
       {showBookingModal && (
-        <div className="fixed inset-0 bg-[#476973]/50 flex items-center justify-center p-6 z-50 backdrop-blur-sm" dir="rtl">
+        <div className="fixed inset-0 bg-[#476973]/50 flex items-center justify-center p-6 z-50 backdrop-blur-sm" dir="ltr">
           <div className="bg-[#F8FBFA] rounded-[36px] p-6 w-full max-w-md shadow-xl text-center">
             
-            <h3 className="text-2xl font-bold text-[#476973] mb-2">حجز الجلسة الأولى</h3>
-            <p className="text-sm text-[#476973]/70 mb-6">الرجاء اختيار الموعد المناسب لزيارتك الأولى للطبيب {mockDoctor.name}</p>
+            <h3 className="text-2xl font-bold text-[#476973] mb-2">Book First Session</h3>
+            <p className="text-sm text-[#476973]/70 mb-6">Please select a suitable date and time for your first visit with {mockDoctor.name}</p>
             
-            <div className="space-y-4 mb-6 text-right">
+            <div className="space-y-4 mb-6 text-left">
                <div>
-                 <label className="block text-sm font-bold text-[#476973] mb-2">تاريخ الموعد</label>
+                 <label className="block text-sm font-bold text-[#476973] mb-2">Appointment Date</label>
                  <div className="flex items-center gap-3 bg-white px-4 py-3 rounded-2xl border border-[#476973]/20">
                    <CalendarIcon size={20} className="text-[#476973]" />
                    <input type="date" value={selectedDate} onChange={e => setSelectedDate(e.target.value)} className="w-full bg-transparent outline-none text-[#476973]" />
                  </div>
                </div>
                <div>
-                 <label className="block text-sm font-bold text-[#476973] mb-2">وقت الموعد</label>
+                 <label className="block text-sm font-bold text-[#476973] mb-2">Appointment Time</label>
                  <div className="flex items-center gap-3 bg-white px-4 py-3 rounded-2xl border border-[#476973]/20">
                    <Clock size={20} className="text-[#476973]" />
                    <input type="time" value={selectedTime} onChange={e => setSelectedTime(e.target.value)} className="w-full bg-transparent outline-none text-[#476973]" />
@@ -437,8 +479,8 @@ export default function HospitalCard({ result, isBestMatch, isAlternative }: Hos
             </div>
 
             <div className="flex gap-3">
-              <button onClick={() => setShowBookingModal(false)} className="flex-1 bg-white border border-[#476973]/20 text-[#476973] py-4 rounded-2xl font-bold hover:bg-[#D4E0DF]/30 transition">إلغاء</button>
-              <button onClick={handleBook} className="flex-1 bg-[#476973] text-white py-4 rounded-2xl font-bold hover:bg-[#3d5d66] transition shadow-sm">تأكيد الموعد</button>
+              <button onClick={() => setShowBookingModal(false)} className="flex-1 bg-white border border-[#476973]/20 text-[#476973] py-4 rounded-2xl font-bold hover:bg-[#D4E0DF]/30 transition">Cancel</button>
+              <button onClick={handleBook} className="flex-1 bg-[#476973] text-white py-4 rounded-2xl font-bold hover:bg-[#3d5d66] transition shadow-sm">Confirm Booking</button>
             </div>
 
           </div>

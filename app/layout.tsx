@@ -3,7 +3,7 @@ import "./globals.css";
 import { TreatmentProvider } from "@/shared/context/TreatmentContext";
 
 export const metadata: Metadata = {
-  title: "PreCare Pay",
+  title: "CareFlow",
   description: "Treatment plan analysis and hospital comparison",
 };
 

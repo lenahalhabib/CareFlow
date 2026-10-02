@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { Activity } from "lucide-react";
 
 export default function WelcomePage() {
   const router = useRouter();
@@ -10,11 +11,14 @@ export default function WelcomePage() {
       <div className="mx-auto flex min-h-[calc(100vh-5rem)] w-full max-w-md flex-col">
         {/* Logo */}
         <section className="flex flex-1 flex-col items-center justify-center text-center">
+          <div className="bg-[#DCE7E6] text-[#476973] p-5 rounded-[28px] mb-6 shadow-sm flex items-center justify-center w-24 h-24">
+            <Activity size={48} strokeWidth={1.5} />
+          </div>
           <h1 className="font-serif text-5xl font-normal tracking-tight">
-            PreCare Pay
+            CareFlow
           </h1>
 
-          <p className="mt-32 max-w-sm text-2xl font-black uppercase leading-[1.25] tracking-[0.13em]">
+          <p className="mt-20 max-w-sm text-2xl font-black uppercase leading-[1.25] tracking-[0.13em]">
             From a treatment
             <br />
             plan to a clear

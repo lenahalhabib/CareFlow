@@ -1,12 +1,12 @@
-🦷 PreCare Pay
+🦷 CareFlow
 
 📖 Overview
 
-PreCare Pay is a web application designed to simplify dental treatment decisions.
+CareFlow is a web application designed to simplify dental treatment decisions.
 
 Patients often receive treatment plans without knowing whether the prices are reasonable or whether another hospital offers a better option.
 
-PreCare Pay analyzes the treatment plan, compares it across multiple hospitals, estimates insurance coverage, and recommends the most suitable hospital based on objective criteria.
+CareFlow analyzes the treatment plan, compares it across multiple hospitals, estimates insurance coverage, and recommends the most suitable hospital based on objective criteria.
 
 ✨ Features
 

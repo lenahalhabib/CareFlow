@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Mail, Lock, ArrowRight, User, Stethoscope } from "lucide-react";
+import { Mail, Lock, ArrowRight, User, Stethoscope, Activity } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 
 export default function LoginPage() {
@@ -57,11 +57,20 @@ export default function LoginPage() {
   };
 
   return (
-    <main className="min-h-screen bg-[#D4E0DF] flex flex-col justify-center px-7">
+    <main className="min-h-screen bg-[#D4E0DF] flex flex-col justify-center px-7 py-12">
       <section className="rounded-[36px] bg-[#F8FBFA] p-7 shadow-sm max-w-md mx-auto w-full">
-        <h1 className="font-serif text-5xl text-[#476973] text-center">
+        <div className="flex flex-col items-center mb-6">
+          <div className="bg-[#476973] text-white p-4 rounded-3xl mb-4 shadow-sm flex items-center justify-center w-20 h-20">
+            <Activity size={40} strokeWidth={1.5} />
+          </div>
+          <h1 className="font-serif text-3xl font-bold text-[#476973]">
+            CareFlow
+          </h1>
+        </div>
+        
+        <h2 className="font-serif text-3xl text-[#476973] text-center">
           Welcome Back
-        </h1>
+        </h2>
 
         <p className="mt-4 text-center text-[#476973]/75">
           Sign in to continue your journey.

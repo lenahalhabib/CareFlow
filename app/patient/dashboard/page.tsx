@@ -9,21 +9,21 @@ import BottomNavigation from "@/shared/components/navigation/BottomNavigation";
 // Mock Patient Data
 const MOCK_PATIENT = {
   name: "أحمد عبدالله",
-  totalCost: 20850,
-  paidAmount: 5000,
+  totalCost: 83500,
+  paidAmount: 8500,
   upcomingAppointment: {
     doctorName: "د. أحمد خالد",
     hospitalName: "Hospital B",
     date: "12 أكتوبر 2026",
     time: "10:00 صباحاً",
-    status: "Pending", // Default, will update based on query
+    status: "Pending",
   },
   treatments: [
-    { id: 1, name: "أشعة CBCT", price: 350, status: "Completed", date: "2 أكتوبر 2026", doctorName: "د. سارة فهد", notes: "تم أخذ الأشعة بنجاح والمريض مستعد لزراعة العظم." },
-    { id: 2, name: "تنظيف جير", price: 300, status: "Completed", date: "2 أكتوبر 2026", doctorName: "د. أحمد خالد", notes: "تم التنظيف." },
-    { id: 3, name: "ترقيع عظم", price: 2500, status: "NoShow", date: "تخلف عن الحضور (12 أكتوبر)", doctorName: "د. أحمد خالد" },
-    { id: 4, name: "رفع الجيب الأنفي", price: 3000, status: "Pending", date: "مجدول (12 أكتوبر)", doctorName: "د. أحمد خالد" },
-    { id: 5, name: "زرعة زيجماتيك", price: 15000, status: "Pending", date: "مجدول لاحقاً", doctorName: "د. عمر عبدالله" },
+    { id: 1, name: "أشعة CBCT للفكين كامل", price: 1500, status: "Completed", date: "2 أكتوبر 2026", doctorName: "د. سارة فهد", notes: "تم أخذ الأشعة بنجاح." },
+    { id: 2, name: "ترقيع عظم", price: 7000, status: "Completed", date: "5 أكتوبر 2026", doctorName: "د. أحمد خالد", notes: "تم الترقيع بنجاح." },
+    { id: 3, name: "رفع الجيب الأنفي", price: 10000, status: "NoShow", date: "تخلف عن الحضور (12 أكتوبر)", doctorName: "د. أحمد خالد" },
+    { id: 4, name: "زرعة زيجماتيك", price: 20000, status: "Pending", date: "مجدول لاحقاً", doctorName: "د. أحمد خالد" },
+    { id: 5, name: "تركيب فك كامل على 6 زرعات", price: 45000, status: "Pending", date: "مجدول لاحقاً", doctorName: "د. عمر عبدالله" },
   ],
   noShowReason: null,
 };
@@ -37,8 +37,43 @@ function PatientDashboardContent() {
   const [patientData, setPatientData] = useState(MOCK_PATIENT);
 
   useEffect(() => {
-    // If coming from booking page, simulate the transition from pending to confirmed
     const statusQuery = searchParams?.get('status');
+    const hospitalQuery = searchParams?.get('hospital');
+    const doctorQuery = searchParams?.get('doctor');
+
+    // Read dynamically booked treatments if available
+    let dynamicTreatments = null;
+    let dynamicTotal = 0;
+    try {
+      const saved = localStorage.getItem("bookedTreatments");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          dynamicTotal = parsed.reduce((sum, item) => sum + (item.totalPrice || 0), 0);
+          dynamicTreatments = parsed.map((item, index) => ({
+            id: index + 1,
+            name: item.serviceName || item.service?.display_name || 'Service',
+            price: item.totalPrice || 0,
+            status: index === 0 ? "Pending" : "Pending", // Mock everything as pending
+            date: index === 0 ? "مجدول (12 أكتوبر)" : "مجدول لاحقاً",
+            doctorName: doctorQuery || "Dr. Ahmed Khalid",
+            notes: ""
+          }));
+        }
+      }
+    } catch (e) {}
+
+    setPatientData(prev => ({
+      ...prev,
+      totalCost: dynamicTreatments ? dynamicTotal : prev.totalCost,
+      treatments: dynamicTreatments || prev.treatments,
+      upcomingAppointment: {
+        ...prev.upcomingAppointment,
+        hospitalName: hospitalQuery || prev.upcomingAppointment.hospitalName,
+        doctorName: doctorQuery || prev.upcomingAppointment.doctorName,
+      }
+    }));
+
     if (statusQuery === 'pending') {
        setPatientData(prev => ({
          ...prev,
@@ -113,28 +148,28 @@ function PatientDashboardContent() {
           {/* Plan Box */}
           <div className="bg-white text-[#476973] rounded-3xl p-4 shadow-sm flex flex-col justify-between">
              <div>
-               <p className="text-xs opacity-70 mb-1">الخطة الأصلية</p>
+               <p className="text-xs opacity-70 mb-1">Original Plan</p>
                <h3 className="font-bold text-sm line-through opacity-50">83,000 SAR</h3>
-               <p className="text-xs opacity-70 mt-1">المدة: 7-15 شهر</p>
+               <p className="text-xs opacity-70 mt-1">Duration: 7-15 months</p>
              </div>
              <div className="mt-3 pt-3 border-t border-[#476973]/10">
                <p className="font-bold text-xs flex items-center gap-1"><Stethoscope size={12}/> {patientData.upcomingAppointment.doctorName}</p>
-               <p className="text-[10px] opacity-70 mt-0.5">{patientData.treatments.length} إجراءات مجدولة</p>
+               <p className="text-[10px] opacity-70 mt-0.5">{patientData.treatments.length} Scheduled Procedures</p>
              </div>
           </div>
         </div>
 
         <div className="bg-white/10 rounded-3xl p-5 border border-white/20">
           <div className="flex justify-between items-center mb-2">
-            <span className="text-sm font-medium">نسبة الإنجاز</span>
+            <span className="text-sm font-medium">Completion Progress</span>
             <span className="font-bold">{progressPercent}%</span>
           </div>
           <div className="w-full bg-white/20 rounded-full h-2 mb-4">
             <div className="bg-white h-2 rounded-full" style={{ width: `${progressPercent}%` }}></div>
           </div>
           <div className="flex justify-between text-sm">
-            <span>المنجز: {completedCount} إجراء</span>
-            <span>المتبقي: {totalCount - completedCount} إجراء</span>
+            <span>Completed: {completedCount} procedure</span>
+            <span>Remaining: {totalCount - completedCount} procedures</span>
           </div>
         </div>
       </header>
@@ -144,15 +179,15 @@ function PatientDashboardContent() {
         {/* Next Appointment Card */}
         <div>
           <div className="flex justify-between items-center mb-4">
-             <h2 className="text-xl font-bold text-[#476973]">موعدك القادم</h2>
-             <button onClick={handleSimulateNoShow} className="text-xs text-[#476973]/50 underline">محاكاة غياب</button>
+             <h2 className="text-xl font-bold text-[#476973]">Upcoming Appointment</h2>
+             <button onClick={handleSimulateNoShow} className="text-xs text-[#476973]/50 underline">Simulate No-Show</button>
           </div>
           
           <div className="bg-[#F8FBFA] rounded-[30px] p-5 shadow-sm border border-[#476973]/10 relative overflow-hidden">
             {patientData.upcomingAppointment.status === 'Pending' && (
               <div className="absolute inset-0 bg-[#F8FBFA]/80 backdrop-blur-sm z-10 flex flex-col items-center justify-center">
                  <div className="w-8 h-8 border-2 border-[#D4E0DF] border-t-[#476973] rounded-full animate-spin mb-2"></div>
-                 <p className="font-bold text-[#476973] text-sm">في انتظار تأكيد الطبيب...</p>
+                 <p className="font-bold text-[#476973] text-sm">Waiting for doctor confirmation...</p>
               </div>
             )}
             
@@ -164,7 +199,7 @@ function PatientDashboardContent() {
                 <p className="text-sm text-[#476973]/70 mt-1">{patientData.upcomingAppointment.hospitalName}</p>
               </div>
               <span className={`px-3 py-1 rounded-full text-xs font-bold shadow-sm ${patientData.upcomingAppointment.status === 'Confirmed' ? 'bg-[#D4E0DF] text-[#476973]' : 'bg-orange-100 text-orange-600'}`}>
-                {patientData.upcomingAppointment.status === 'Confirmed' ? 'مؤكد' : 'قيد الانتظار'}
+                {patientData.upcomingAppointment.status === 'Confirmed' ? 'Confirmed' : 'Pending'}
               </span>
             </div>
             
@@ -174,15 +209,15 @@ function PatientDashboardContent() {
             </div>
             
             <div className="mt-5 flex gap-3">
-               <button className="flex-1 bg-[#476973] text-white py-3 rounded-2xl font-bold hover:bg-[#3d5d66] transition text-sm">تعديل الموعد</button>
-               <button className="flex-1 bg-white border border-[#476973]/20 text-[#476973] py-3 rounded-2xl font-bold hover:bg-[#F8FBFA] transition text-sm flex justify-center items-center gap-2"><MapPin size={16}/> الموقع</button>
+               <button className="flex-1 bg-[#476973] text-white py-3 rounded-2xl font-bold hover:bg-[#3d5d66] transition text-sm">Edit Date</button>
+               <button className="flex-1 bg-white border border-[#476973]/20 text-[#476973] py-3 rounded-2xl font-bold hover:bg-[#F8FBFA] transition text-sm flex justify-center items-center gap-2"><MapPin size={16}/> Location</button>
             </div>
           </div>
         </div>
 
         {/* Treatment Plan Details */}
         <div>
-          <h2 className="text-xl font-bold text-[#476973] mb-4">تفاصيل الخطة العلاجية</h2>
+          <h2 className="text-xl font-bold text-[#476973] mb-4">Treatment Plan Details</h2>
           <div className="bg-[#F8FBFA] rounded-[30px] p-5 shadow-sm border border-[#476973]/10 space-y-4">
             
             {patientData.treatments.map((t, i) => (
@@ -209,7 +244,7 @@ function PatientDashboardContent() {
                   </div>
                   
                   {t.status === 'NoShow' && (
-                    <button onClick={handleSimulateNoShow} className="mt-2 text-xs font-bold text-red-500 underline bg-red-50 px-3 py-1.5 rounded-full inline-block">اختر سبب الغياب لعرض بدائل</button>
+                    <button onClick={handleSimulateNoShow} className="mt-2 text-xs font-bold text-red-500 underline bg-red-50 px-3 py-1.5 rounded-full inline-block">Provide absence reason</button>
                   )}
                   
                   {t.status === 'Completed' && t.notes && (

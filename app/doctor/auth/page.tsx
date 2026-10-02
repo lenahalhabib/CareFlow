@@ -31,12 +31,22 @@ export default function DoctorSignupPage() {
   return (
     <main className="min-h-screen bg-[#D4E0DF] flex flex-col justify-center px-4 py-10">
       <section className="rounded-[36px] bg-[#F8FBFA] p-7 shadow-sm max-w-2xl mx-auto w-full">
-        <h1 className="font-serif text-4xl text-[#476973] text-center">
+        <div className="flex flex-col items-center mb-6">
+          <div className="bg-[#476973] text-white p-4 rounded-3xl mb-4 shadow-sm flex items-center justify-center w-16 h-16">
+            {/* Generic placeholder for CareFlow Logo */}
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-activity"><path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"/></svg>
+          </div>
+          <h1 className="font-serif text-2xl font-bold text-[#476973]">
+            CareFlow
+          </h1>
+        </div>
+        
+        <h2 className="font-serif text-4xl text-[#476973] text-center">
           Doctor Registration
-        </h1>
+        </h2>
 
         <p className="mt-2 text-center text-[#476973]/75 mb-8">
-          Join PreCare Pay to provide clear treatment plans.
+          Join CareFlow to provide clear treatment plans.
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-5">
@@ -61,10 +71,10 @@ export default function DoctorSignupPage() {
               <FileBadge size={20} className="text-[#476973]" />
               <select className="w-full bg-transparent text-[#476973] outline-none appearance-none" value={formData.professionalTitle} onChange={(e) => setFormData({...formData, professionalTitle: e.target.value})}>
                 <option value="" disabled>Professional Title</option>
-                <option value="general">طبيب عام (General)</option>
-                <option value="specialist">أخصائي (Specialist)</option>
-                <option value="senior_specialist">أخصائي أول (Senior)</option>
-                <option value="consultant">استشاري (Consultant)</option>
+                <option value="general">General Practitioner</option>
+                <option value="specialist">Specialist</option>
+                <option value="senior_specialist">Senior Specialist</option>
+                <option value="consultant">Consultant</option>
               </select>
             </div>
           </div>
@@ -77,15 +87,15 @@ export default function DoctorSignupPage() {
             <div className="flex items-center gap-3 rounded-2xl bg-white px-4 py-3">
               <select className="w-full bg-transparent text-[#476973] outline-none appearance-none" value={formData.specialty} onChange={(e) => setFormData({...formData, specialty: e.target.value})}>
                 <option value="" disabled>Specialty</option>
-                <option value="surgery">جراحة الوجه والفكين وزراعة الأسنان</option>
-                <option value="prosthodontics">الاستعاضة السنية والتركيبات</option>
-                <option value="endodontics">علاج الجذور وعصب الأسنان</option>
-                <option value="orthodontics">تقويم الأسنان</option>
-                <option value="periodontics">علاج اللثة</option>
-                <option value="cosmetic">تجميل الأسنان</option>
-                <option value="pediatric">طب أسنان الأطفال</option>
-                <option value="general">طب أسنان عام</option>
-                <option value="other">أخرى (Other)</option>
+                <option value="surgery">Oral and Maxillofacial Surgery & Implants</option>
+                <option value="prosthodontics">Prosthodontics</option>
+                <option value="endodontics">Endodontics (Root Canal)</option>
+                <option value="orthodontics">Orthodontics</option>
+                <option value="periodontics">Periodontics (Gum Disease)</option>
+                <option value="cosmetic">Cosmetic Dentistry</option>
+                <option value="pediatric">Pediatric Dentistry</option>
+                <option value="general">General Dentistry</option>
+                <option value="other">Other</option>
               </select>
             </div>
           </div>
