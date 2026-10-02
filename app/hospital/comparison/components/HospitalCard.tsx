@@ -121,77 +121,77 @@ export default function HospitalCard({ result, isBestMatch, isAlternative }: Hos
   };
 
   return (
-    <article className="rounded-[30px] bg-[#F8FBFA] p-5 shadow-sm relative">
-      <div className="flex items-start justify-between gap-4">
+    <article className="rounded-[24px] bg-[#F8FBFA] p-4 shadow-sm relative">
+      <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           {isBestMatch && (
-            <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-[#476973] px-3 py-1.5 text-xs font-semibold text-white">
-              <Trophy size={14} />
+            <div className="mb-2 inline-flex items-center gap-1.5 rounded-full bg-[#476973] px-2.5 py-1 text-[11px] font-semibold text-white">
+              <Trophy size={12} />
               Best Match
             </div>
           )}
 
-          <h2 className="font-serif text-2xl text-[#476973]">
+          <h2 className="font-serif text-xl text-[#476973]">
             {result.hospital.name}
           </h2>
           
-          <button onClick={() => setShowDoctorModal(true)} className="mt-1 flex items-center gap-2 text-[#476973] font-bold text-sm hover:underline">
-            <Stethoscope size={16} /> {mockDoctor.name}
+          <button onClick={() => setShowDoctorModal(true)} className="mt-1 flex items-center gap-1.5 text-[#476973] font-bold text-xs hover:underline">
+            <Stethoscope size={14} /> {mockDoctor.name}
           </button>
 
-          <p className="mt-2 flex items-center gap-2 text-sm text-[#476973]/70">
-            <MapPin size={16} className="shrink-0" />
+          <p className="mt-2 flex items-center gap-1.5 text-xs text-[#476973]/70">
+            <MapPin size={14} className="shrink-0" />
             {result.hospital.location} (يبعد 2.5 كم)
           </p>
 
           {result.hospital.accreditation && (
-            <p className="mt-1 flex items-center gap-2 text-sm text-[#476973]/70">
-              <BadgeCheck size={16} className="shrink-0" />
+            <p className="mt-1 flex items-center gap-1.5 text-xs text-[#476973]/70">
+              <BadgeCheck size={14} className="shrink-0" />
               {result.hospital.accreditation}
             </p>
           )}
           
-          <div className="mt-2 flex gap-2">
-            <span className="bg-[#D4E0DF] text-[#476973] px-2 py-1 rounded-md text-xs font-bold">يقبل التأمين</span>
-            <span className="bg-[#D4E0DF] text-[#476973] px-2 py-1 rounded-md text-xs font-bold">يوجد تقسيط</span>
+          <div className="mt-2 flex gap-1.5">
+            <span className="bg-[#D4E0DF] text-[#476973] px-2 py-0.5 rounded-md text-[11px] font-bold">يقبل التأمين</span>
+            <span className="bg-[#D4E0DF] text-[#476973] px-2 py-0.5 rounded-md text-[11px] font-bold">يوجد تقسيط</span>
           </div>
         </div>
 
         <div className="shrink-0 text-right">
-          <p className="text-xs text-[#476973]/60">
+          <p className="text-[11px] text-[#476973]/60">
             Total Price
           </p>
 
-          <p className="mt-1 text-2xl font-bold text-[#476973]">
+          <p className="mt-0.5 text-xl font-bold text-[#476973]">
             {formatAmount(displayTotal)}
           </p>
 
-          <p className="text-xs text-[#476973]/60">
+          <p className="text-[11px] text-[#476973]/60">
             SAR
           </p>
         </div>
       </div>
 
-      <div className="mt-5 rounded-2xl bg-white p-4">
-        <div className="flex items-center justify-between gap-4">
+      <div className="mt-4 rounded-xl bg-white p-3">
+        <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-2">
             <Star
-              size={20}
+              size={18}
               className="text-[#476973]"
             />
 
-            <p className="font-semibold text-[#476973]">
+            <p className="text-sm font-semibold text-[#476973]">
               Hospital Rating
             </p>
           </div>
 
-          <p className="font-bold text-[#476973]">
+          <p className="text-sm font-bold text-[#476973]">
             {result.hospital.rating}/5
           </p>
         </div>
       </div>
 
-      <div className="mt-4 space-y-3">
+      <div className="mt-3 space-y-2">
         <TreatmentPrices
           items={isAlternative ? result.matchedItems.slice(2) : result.matchedItems}
           total={displayTotal}
@@ -201,7 +201,7 @@ export default function HospitalCard({ result, isBestMatch, isAlternative }: Hos
           options={result.insuranceOptions}
         />
 
-        <div className="overflow-hidden rounded-2xl bg-white">
+        <div className="overflow-hidden rounded-xl bg-white">
           <button
             type="button"
             onClick={() =>
@@ -210,20 +210,20 @@ export default function HospitalCard({ result, isBestMatch, isAlternative }: Hos
                   !previousValue
               )
             }
-            className="flex w-full items-center justify-between gap-4 p-4 text-left"
+            className="flex w-full items-center justify-between gap-3 p-3 text-left"
             aria-expanded={isFinancingOpen}
           >
-            <div className="flex min-w-0 items-center gap-3">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#D4E0DF] text-[#476973]">
-                <CreditCard size={19} />
+            <div className="flex min-w-0 items-center gap-2.5">
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#D4E0DF] text-[#476973]">
+                <CreditCard size={16} />
               </div>
 
               <div className="min-w-0">
-                <p className="font-semibold text-[#476973]">
+                <p className="text-sm font-semibold text-[#476973]">
                   With Nama Card
                 </p>
 
-                <p className="mt-0.5 text-sm text-[#476973]/70">
+                <p className="mt-0.5 text-xs text-[#476973]/70">
                   Pay only{" "}
                   <span className="font-semibold text-[#476973]">
                     {formatAmount(
@@ -236,7 +236,7 @@ export default function HospitalCard({ result, isBestMatch, isAlternative }: Hos
             </div>
 
             <ChevronDown
-              size={20}
+              size={18}
               className={`shrink-0 text-[#476973] transition-transform ${
                 isFinancingOpen
                   ? "rotate-180"
@@ -246,7 +246,7 @@ export default function HospitalCard({ result, isBestMatch, isAlternative }: Hos
           </button>
 
           {isFinancingOpen && (
-            <div className="border-t border-[#D4E0DF] px-4 pb-4 pt-5">
+            <div className="border-t border-[#D4E0DF] px-3 pb-3 pt-4">
               <div className="text-center">
                 <p className="flex items-center justify-center gap-2 text-sm font-semibold text-[#476973]">
                   <CreditCard size={17} />

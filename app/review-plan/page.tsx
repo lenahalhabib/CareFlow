@@ -61,19 +61,19 @@ export default function ReviewPlanPage() {
 
   return (
     <main className="min-h-screen bg-[#D4E0DF] flex flex-col">
-      <section className="flex-1 px-6 pt-12 pb-10">
-        <header className="mb-8 text-center">
-          <h1 className="font-serif text-4xl text-[#476973]">
+      <section className="flex-1 px-4 pt-6 pb-8">
+        <header className="mb-6 text-center">
+          <h1 className="font-serif text-3xl text-[#476973]">
             Review Plan
           </h1>
 
-          <p className="mt-3 text-[#476973]/75">
+          <p className="mt-2 text-sm text-[#476973]/75">
             Understand your treatment sequence, estimated time between
             stages, and overall treatment journey.
           </p>
         </header>
 
-        <div className="rounded-[36px] bg-[#F8FBFA] p-6 shadow-sm">
+        <div className="rounded-[24px] bg-[#F8FBFA] p-4 shadow-sm">
           {!hasItems ? (
             <div className="rounded-3xl bg-white p-5 text-center">
               <p className="font-semibold text-[#476973]">
@@ -136,7 +136,7 @@ export default function ReviewPlanPage() {
                     </div>
                   )}
 
-                  <div className="mt-8">
+                  <div className="mt-5">
                     {treatmentTimeline.map((timelineStep, index) => {
                       const waitPeriod = formatWaitPeriod(
                         timelineStep.waitAfter.min,
@@ -151,44 +151,44 @@ export default function ReviewPlanPage() {
 
                       return (
                         <div key={`${timelineStep.step}-${index}`}>
-                          <div className="rounded-3xl bg-white p-5 text-[#476973] shadow-sm">
-                            <div className="flex items-start gap-4">
-                              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#476973] font-bold text-white">
+                          <div className="rounded-[20px] bg-white p-4 text-[#476973] shadow-sm">
+                            <div className="flex items-start gap-3">
+                              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#476973] font-bold text-white">
                                 {timelineStep.step}
                               </div>
 
                               <div className="min-w-0 flex-1">
-                                <p className="text-lg font-bold">
+                                <p className="text-base font-bold">
                                   {timelineStep.serviceName}
                                 </p>
 
                                 {timelineStep.toothNumber && (
-                                  <p className="mt-1 text-sm text-[#476973]/65">
+                                  <p className="mt-1 text-xs text-[#476973]/65">
                                     Tooth: {timelineStep.toothNumber}
                                   </p>
                                 )}
 
                                 {timelineStep.reason && (
-                                  <p className="mt-3 text-sm leading-6 text-[#476973]/75">
+                                  <p className="mt-2 text-xs leading-5 text-[#476973]/75">
                                     {timelineStep.reason}
                                   </p>
                                 )}
 
                                 {timelineStep.dependsOn.length > 0 && (
-                                  <p className="mt-3 text-xs font-medium text-[#476973]/60">
+                                  <p className="mt-2 text-[11px] font-medium text-[#476973]/60">
                                     Follows step{" "}
                                     {timelineStep.dependsOn.join(", ")}
                                   </p>
                                 )}
 
                                 {timelineStep.requiresDoctorConfirmation && (
-                                  <div className="mt-4 flex items-start gap-2 rounded-2xl bg-[#EEF4F3] p-3">
+                                  <div className="mt-3 flex items-start gap-2 rounded-xl bg-[#EEF4F3] p-2.5">
                                     <Stethoscope
-                                      size={17}
+                                      size={15}
                                       className="mt-0.5 shrink-0"
                                     />
 
-                                    <p className="text-xs leading-5 text-[#476973]/80">
+                                    <p className="text-[11px] leading-4 text-[#476973]/80">
                                       Sequence and timing should be
                                       confirmed by your dentist.
                                     </p>
@@ -199,21 +199,21 @@ export default function ReviewPlanPage() {
                           </div>
 
                           {index < treatmentTimeline.length - 1 && (
-                            <div className="flex flex-col items-center py-3">
+                            <div className="flex flex-col items-center py-2">
                               <ArrowDown
-                                size={20}
+                                size={18}
                                 className="text-[#476973]/50"
                               />
 
                               {waitPeriod && (
-                                <div className="mt-2 max-w-sm rounded-2xl border border-[#B8C9C6] bg-[#EEF4F3] px-4 py-3 text-center">
-                                  <div className="flex items-center justify-center gap-2">
+                                <div className="mt-1.5 max-w-sm rounded-xl border border-[#B8C9C6] bg-[#EEF4F3] px-3 py-2 text-center">
+                                  <div className="flex items-center justify-center gap-1.5">
                                     <Clock
-                                      size={16}
+                                      size={14}
                                       className="shrink-0 text-[#476973]"
                                     />
 
-                                    <p className="text-sm font-semibold text-[#476973]">
+                                    <p className="text-xs font-semibold text-[#476973]">
                                       {waitPeriod ===
                                       "No estimated waiting period"
                                         ? waitPeriod
@@ -224,14 +224,14 @@ export default function ReviewPlanPage() {
                               )}
 
                               {!waitPeriod && hasUnknownWait && (
-                                <div className="mt-2 max-w-sm rounded-2xl border border-[#B8C9C6] bg-[#EEF4F3] px-4 py-3 text-center">
-                                  <div className="flex items-center justify-center gap-2">
+                                <div className="mt-1.5 max-w-sm rounded-xl border border-[#B8C9C6] bg-[#EEF4F3] px-3 py-2 text-center">
+                                  <div className="flex items-center justify-center gap-1.5">
                                     <Clock
-                                      size={16}
+                                      size={14}
                                       className="shrink-0 text-[#476973]"
                                     />
 
-                                    <p className="text-sm font-semibold text-[#476973]">
+                                    <p className="text-xs font-semibold text-[#476973]">
                                       Timing requires dentist confirmation
                                     </p>
                                   </div>
@@ -255,40 +255,40 @@ export default function ReviewPlanPage() {
                 </section>
               )}
 
-              <section className={hasTimeline ? "mt-10" : ""}>
-                <h2 className="font-serif text-3xl text-[#476973] text-center">
+              <section className={hasTimeline ? "mt-8" : ""}>
+                <h2 className="font-serif text-2xl text-[#476973] text-center">
                   Treatment Plan
                 </h2>
 
-                <div className="mt-8 space-y-4">
+                <div className="mt-5 space-y-3">
                   {items.map((item, index) => (
                     <div
                       key={index}
-                      className="rounded-3xl bg-white p-5 text-[#476973]"
+                      className="rounded-2xl bg-white p-4 text-[#476973]"
                     >
                       <div className="flex items-start gap-3">
                         <CheckCircle
-                          size={24}
-                          className="mt-1 shrink-0 text-[#476973]"
+                          size={20}
+                          className="mt-0.5 shrink-0 text-[#476973]"
                         />
 
                         <div className="flex-1">
-                          <p className="text-lg font-bold">
+                          <p className="text-base font-bold">
                             {item.serviceName}
                           </p>
 
                           {item.toothNumber && (
-                            <p className="mt-1 text-sm text-[#476973]/65">
+                            <p className="mt-1 text-xs text-[#476973]/65">
                               Tooth: {item.toothNumber}
                             </p>
                           )}
 
-                          <p className="mt-1 text-sm text-[#476973]/65">
+                          <p className="mt-1 text-xs text-[#476973]/65">
                             Qty: {item.quantity}
                           </p>
                         </div>
 
-                        <p className="font-bold">
+                        <p className="font-bold text-sm">
                           {Number(item.totalPrice).toLocaleString()} SAR
                         </p>
                       </div>
@@ -296,11 +296,11 @@ export default function ReviewPlanPage() {
                   ))}
                 </div>
 
-                <div className="mt-6 rounded-3xl bg-[#476973] p-5 text-white">
-                  <div className="flex justify-between">
-                    <p className="text-xl font-bold">Total</p>
+                <div className="mt-5 rounded-2xl bg-[#476973] p-4 text-white">
+                  <div className="flex justify-between items-center">
+                    <p className="text-lg font-bold">Total</p>
 
-                    <p className="text-xl font-bold">
+                    <p className="text-lg font-bold">
                       {Number(totalAmount).toLocaleString()} SAR
                     </p>
                   </div>
@@ -309,18 +309,18 @@ export default function ReviewPlanPage() {
 
               <button
                 onClick={() => router.push("/create-plan")}
-                className="mt-6 flex w-full items-center justify-center gap-2 rounded-2xl border-2 border-[#476973] py-4 font-semibold text-[#476973]"
+                className="mt-5 flex w-full items-center justify-center gap-2 rounded-2xl border-2 border-[#476973] py-3 font-semibold text-[#476973]"
               >
-                <Pencil size={20} />
+                <Pencil size={18} />
                 Edit / Upload Again
               </button>
 
               <button
                 onClick={() => router.push("/hospital/comparison")}
-                className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl bg-[#476973] py-4 font-semibold text-white"
+                className="mt-3 flex w-full items-center justify-center gap-2 rounded-2xl bg-[#476973] py-3 font-semibold text-white"
               >
                 Compare Hospitals
-                <ArrowRight size={20} />
+                <ArrowRight size={18} />
               </button>
             </>
           )}

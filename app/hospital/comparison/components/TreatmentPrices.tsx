@@ -37,7 +37,7 @@ export default function TreatmentPrices({
   ] = useState(false);
 
   return (
-    <section className="overflow-hidden rounded-[24px] bg-white">
+    <section className="overflow-hidden rounded-xl bg-white">
       <button
         type="button"
         onClick={() =>
@@ -46,20 +46,20 @@ export default function TreatmentPrices({
           )
         }
         aria-expanded={opened}
-        className="flex w-full items-center justify-between gap-4 p-4 text-left"
+        className="flex w-full items-center justify-between gap-3 p-3 text-left"
       >
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5">
           <ReceiptText
-            size={20}
+            size={18}
             className="text-[#476973]"
           />
 
           <div>
-            <p className="font-semibold text-[#476973]">
+            <p className="text-sm font-semibold text-[#476973]">
               Treatment Prices
             </p>
 
-            <p className="mt-1 text-xs text-[#476973]/60">
+            <p className="mt-0.5 text-xs text-[#476973]/60">
               {items.length} matched{" "}
               {items.length === 1
                 ? "service"
@@ -70,19 +70,19 @@ export default function TreatmentPrices({
 
         {opened ? (
           <ChevronUp
-            size={20}
+            size={18}
             className="text-[#476973]"
           />
         ) : (
           <ChevronDown
-            size={20}
+            size={18}
             className="text-[#476973]"
           />
         )}
       </button>
 
       {opened && (
-        <div className="border-t border-[#E4ECEA] p-4">
+        <div className="border-t border-[#E4ECEA] p-3">
           {items.length === 0 ? (
             <p className="rounded-2xl bg-[#F8FBFA] p-4 text-sm text-[#476973]/70">
               No treatment prices are

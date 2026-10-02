@@ -27,7 +27,7 @@ export default function MissingServices({
   }
 
   return (
-    <section className="overflow-hidden rounded-[24px] bg-yellow-50">
+    <section className="overflow-hidden rounded-xl bg-yellow-50">
       <button
         type="button"
         onClick={() =>
@@ -36,17 +36,17 @@ export default function MissingServices({
           )
         }
         aria-expanded={opened}
-        className="flex w-full items-center justify-between gap-4 p-4 text-left text-yellow-800"
+        className="flex w-full items-center justify-between gap-3 p-3 text-left text-yellow-800"
       >
-        <div className="flex items-center gap-3">
-          <AlertTriangle size={20} />
+        <div className="flex items-center gap-2.5">
+          <AlertTriangle size={18} />
 
           <div>
-            <p className="font-semibold">
+            <p className="text-sm font-semibold">
               Services Not Available
             </p>
 
-            <p className="mt-1 text-xs text-yellow-800/65">
+            <p className="mt-0.5 text-xs text-yellow-800/65">
               {items.length}{" "}
               {items.length === 1
                 ? "service"
@@ -56,14 +56,14 @@ export default function MissingServices({
         </div>
 
         {opened ? (
-          <ChevronUp size={20} />
+          <ChevronUp size={18} />
         ) : (
-          <ChevronDown size={20} />
+          <ChevronDown size={18} />
         )}
       </button>
 
       {opened && (
-        <div className="border-t border-yellow-200 p-4">
+        <div className="border-t border-yellow-200 p-3">
           <ul className="space-y-2 text-sm text-yellow-800">
             {items.map(
               (item, index) => (

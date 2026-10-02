@@ -44,7 +44,7 @@ export default function InsuranceSelector({
   ] = useState(false);
 
   return (
-    <section className="overflow-hidden rounded-[24px] bg-[#E4ECEA]">
+    <section className="overflow-hidden rounded-xl bg-[#E4ECEA]">
       <button
         type="button"
         onClick={() =>
@@ -53,20 +53,20 @@ export default function InsuranceSelector({
           )
         }
         aria-expanded={opened}
-        className="flex w-full items-center justify-between gap-4 p-4 text-left"
+        className="flex w-full items-center justify-between gap-3 p-3 text-left"
       >
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5">
           <ShieldCheck
-            size={20}
+            size={18}
             className="text-[#476973]"
           />
 
           <div>
-            <p className="font-semibold text-[#476973]">
+            <p className="text-sm font-semibold text-[#476973]">
               Insurance Options
             </p>
 
-            <p className="mt-1 text-xs text-[#476973]/60">
+            <p className="mt-0.5 text-xs text-[#476973]/60">
               Estimated financial
               coverage
             </p>
@@ -75,19 +75,19 @@ export default function InsuranceSelector({
 
         {opened ? (
           <ChevronUp
-            size={20}
+            size={18}
             className="text-[#476973]"
           />
         ) : (
           <ChevronDown
-            size={20}
+            size={18}
             className="text-[#476973]"
           />
         )}
       </button>
 
       {opened && (
-        <div className="border-t border-[#CAD8D5] p-4">
+        <div className="border-t border-[#CAD8D5] p-3">
           <p className="mb-4 text-xs leading-5 text-[#476973]/60">
             Insurance estimates are
             displayed for financial
