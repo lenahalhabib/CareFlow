@@ -60,12 +60,7 @@ export default function LoginPage() {
     <main className="min-h-screen bg-[#D4E0DF] flex flex-col justify-center px-7 py-12">
       <section className="rounded-[36px] bg-[#F8FBFA] p-7 shadow-sm max-w-md mx-auto w-full">
         <div className="flex flex-col items-center mb-6">
-          <div className="bg-[#476973] text-white p-4 rounded-3xl mb-4 shadow-sm flex items-center justify-center w-20 h-20">
-            <Activity size={40} strokeWidth={1.5} />
-          </div>
-          <h1 className="font-serif text-3xl font-bold text-[#476973]">
-            CareFlow
-          </h1>
+          <img src="/logo.png" alt="CareFlow Logo" className="w-48 h-auto" />
         </div>
         
         <h2 className="font-serif text-3xl text-[#476973] text-center">

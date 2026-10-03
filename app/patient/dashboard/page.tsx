@@ -33,6 +33,7 @@ function PatientDashboardContent() {
   const router = useRouter();
   const [showNoShowModal, setShowNoShowModal] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
   const [noShowReason, setNoShowReason] = useState("");
   const [patientData, setPatientData] = useState(MOCK_PATIENT);
 
@@ -120,10 +121,22 @@ function PatientDashboardContent() {
             <h1 className="text-2xl font-bold">{patientData.name}</h1>
           </div>
           <div className="flex items-center gap-3">
-            <button className="relative w-12 h-12 bg-white/10 text-white rounded-full flex items-center justify-center hover:bg-white/20 transition">
-               <Bell size={24} />
-               <span className="absolute top-3 right-3 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-[#476973]"></span>
-            </button>
+            <div className="relative">
+              <button onClick={() => setShowNotifications(!showNotifications)} className="relative w-12 h-12 bg-white/10 text-white rounded-full flex items-center justify-center hover:bg-white/20 transition">
+                 <Bell size={24} />
+                 <span className="absolute top-3 right-3 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-[#476973]"></span>
+              </button>
+              {showNotifications && (
+                <div className="absolute left-0 mt-2 w-72 bg-white rounded-2xl shadow-xl overflow-hidden z-50 border border-[#476973]/10 text-right p-4">
+                  <h3 className="font-bold text-[#476973] mb-3 border-b border-[#476973]/10 pb-2">الإشعارات</h3>
+                  <div className="bg-[#F8FBFA] p-3 rounded-xl border border-[#476973]/10 flex flex-col gap-1 text-right">
+                    <span className="text-[#476973] font-bold text-sm">تذكير بموعدك</span>
+                    <p className="text-[#476973]/80 text-xs leading-relaxed">نذكرك بموعدك غداً في عيادة الأسنان الساعة 8:00 مساءً.</p>
+                    <span className="text-[#476973]/50 text-[10px] mt-1">منذ ساعتين</span>
+                  </div>
+                </div>
+              )}
+            </div>
             <div className="w-12 h-12 bg-[#DCE7E6] text-[#476973] rounded-full flex items-center justify-center shadow-sm">
                <User size={24} />
             </div>

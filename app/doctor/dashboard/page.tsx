@@ -269,7 +269,8 @@ export default function DoctorDashboard() {
       <header className="bg-[#476973] text-[#DCE7E6] p-4 shadow-md">
         <div className="container mx-auto flex justify-between items-center">
           <h1 className="text-2xl font-serif tracking-tight flex items-center gap-2">
-            <Activity size={24} /> CareFlow <span className="text-sm font-sans opacity-80">| Doctor Portal</span>
+            <img src="/logo.png" alt="CareFlow" className="h-16 w-auto object-contain" />
+            <span className="text-xl font-sans opacity-80">| Doctor Portal</span>
           </h1>
           <div className="flex items-center space-x-4">
             <span className="text-sm font-medium">Dr. Ahmed Khalid (Implant Consultant)</span>

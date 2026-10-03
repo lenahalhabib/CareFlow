@@ -32,13 +32,7 @@ export default function DoctorSignupPage() {
     <main className="min-h-screen bg-[#D4E0DF] flex flex-col justify-center px-4 py-10">
       <section className="rounded-[36px] bg-[#F8FBFA] p-7 shadow-sm max-w-2xl mx-auto w-full">
         <div className="flex flex-col items-center mb-6">
-          <div className="bg-[#476973] text-white p-4 rounded-3xl mb-4 shadow-sm flex items-center justify-center w-16 h-16">
-            {/* Generic placeholder for CareFlow Logo */}
-            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-activity"><path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"/></svg>
-          </div>
-          <h1 className="font-serif text-2xl font-bold text-[#476973]">
-            CareFlow
-          </h1>
+          <img src="/logo.png" alt="CareFlow Logo" className="w-48 h-auto" />
         </div>
         
         <h2 className="font-serif text-4xl text-[#476973] text-center">
